@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -18,6 +18,9 @@ echo "  Inotify_Events:   ${INOTIFY_EVENTS:=${INOTIFY_EVENTS_DEFAULT}}"
 echo "  Inotify_Options:  ${INOTIFY_OPTONS:=${INOTIFY_OPTONS_DEFAULT}}"
 echo
 
+echo "Found matching instances:"
+docker ps --filter name=${NGINXNAMEFILTER} --format 'table {{.ID}}\t{{.Names}}'
+echo
 
 #
 # Inotify part.
@@ -26,17 +29,14 @@ echo "[Starting inotifywait...]"
 inotifywait -e ${INOTIFY_EVENTS} ${INOTIFY_OPTONS} "${WATCHVOLUME}" | \
     while read -r notifies;
     do
-    	echo "$notifies"
-        echo "notify received, reload config"
+        echo "---  notify received: $notifies"
         IDs=$(docker ps --filter name=${NGINXNAMEFILTER} --format '{{.ID}}')
-        echo $IDs
+        echo "Container matching:" ${IDs}
         for ID in $IDs; do
-			echo "do $ID"
-			docker exec $ID nginx -t
-			if [ $? -eq 0 ]
-			then
+			echo "___  do $ID"
+			docker exec $ID nginx -t && {
 				echo "Reloading Nginx Configuration"
 				docker exec $ID nginx -s reload
-			fi
+			} || echo "no reload!!!"
         done
     done

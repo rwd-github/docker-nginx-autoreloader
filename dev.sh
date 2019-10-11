@@ -4,7 +4,10 @@
 export STACKNAME=nginx-autoreloader
 
 function build {
-	docker build -t rwd1/${STACKNAME} .
+	docker service rm nginx-autoreloader_nginxreloader
+#	sleep 3
+#	docker image rm rwd1/${STACKNAME}:local
+	docker build -t rwd1/${STACKNAME}:local .
 }
 
 function deploy {
@@ -20,7 +23,9 @@ case "$1" in
 		deploy
 		;;
 	bd)
-		build && deploy && docker logs -f $(docker ps --filter name=${STACKNAME}_nginxreloader --format '{{.ID}}')
+		build && deploy
+		sleep 3
+		docker logs -f $(docker ps --filter name=${STACKNAME}_nginxreloader --format '{{.ID}}')
 		;;
 	*)
 		echo "unknown command: $1"

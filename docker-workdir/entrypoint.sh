@@ -3,7 +3,8 @@
 set -e
 
 echo "  NGINXNAMEFILTER:  ${NGINXNAMEFILTER}"
-echo "  WATCHVOLUMES:     ${WATCHVOLUMES}"
+echo "  WATCHVOLUME:      ${WATCHVOLUME}"
+echo
 
 
 pids=
