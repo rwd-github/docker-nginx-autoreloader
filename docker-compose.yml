@@ -8,7 +8,7 @@ services:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
       - ./nginx:/etc/nginx:ro
     environment:
-      - NGINXNAMEFILTER=${STACKNAME}_nginx-
+      - NGINXNAMEFILTER=^${STACKNAME}_nginx-.*$$
   
   nginx-a:
     image: nginx:alpine
