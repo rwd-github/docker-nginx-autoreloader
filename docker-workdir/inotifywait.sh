@@ -18,8 +18,14 @@ echo "  Inotify_Events:   ${INOTIFY_EVENTS:=${INOTIFY_EVENTS_DEFAULT}}"
 echo "  Inotify_Options:  ${INOTIFY_OPTONS:=${INOTIFY_OPTONS_DEFAULT}}"
 echo
 
-echo "Found matching instances:"
-docker ps --filter name=${NGINXNAMEFILTER} --format 'table {{.ID}}\t{{.Names}}'
+IDs=$(docker ps --filter name=${NGINXNAMEFILTER} --format '{{.ID}}')
+if [ -z ${IDs} ]; then
+	echo "no instances found!"
+	exit 1
+else
+	echo "Found matching instances:"
+	docker ps --filter name=${NGINXNAMEFILTER} --format 'table {{.ID}}\t{{.Names}}'
+fi
 echo
 
 #
